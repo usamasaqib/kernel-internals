@@ -33,7 +33,7 @@ __kernel_physical_mapping_init (paddr_start=0x43fe00000, paddr_end=0x440000000, 
 The [e820__memblock_setup](https://elixir.bootlin.com/linux/v6.8.9/source/arch/x86/kernel/e820.c#L1316) in `setup_arch` adds all `e820_table` entries to memblock.
 From this point on the kernel interacts with the memblock API to access physical memory.
 
-The kernel calls [init_range_memory_mapping](https://elixir.bootlin.com/linux/v6.8.9/source/arch/x86/mm/init.c#L571) via [memory_map_top_down](https://elixir.bootlin.com/linux/v6.8.9/source/arch/x86/mm/init.c#L628), which loops over each PFN in the [memblock](./memblock) regions, and maps each region falling within the provided range.
+The kernel calls [init_range_memory_mapping](https://elixir.bootlin.com/linux/v6.8.9/source/arch/x86/mm/init.c#L571) via [memory_map_top_down](https://elixir.bootlin.com/linux/v6.8.9/source/arch/x86/mm/init.c#L628), which loops over each PFN in the [memblock](./memblock.md) regions, and maps each region falling within the provided range.
 
 ```c
 /*
