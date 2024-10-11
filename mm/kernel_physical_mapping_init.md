@@ -134,11 +134,6 @@ By looping over the ranges in memblocks we avoid creating mappings for holes in 
 
 As explained above `init_range_memory_mapping` loops over each memblock region, checks if it covers the desired range `[r_start, r_end]`. If it falls in the desired range then it calls `init_memory_mapping` with `PFN_PHYS(start)` and `PFN_PHYS(end)`.
 
-#### PFN_PHYS
-```c
-#define PFN_PHYS(x) ((phys_addr_t)(x) << PAGE_SHIFT)
-```
-Convert a PFN (page frame number) to a physical address
 ### init_memory_mapping
 ```c
 /*
@@ -243,9 +238,8 @@ The macro is defined as follows
 
 Completely preprocessed it would look like:
 ```c
+((  __PP |__   RW | 0 |___   A |__    NX |___  D  | 0 |___  G) | _ENC) & __default_kernel_pte_mask
 (1 << 0 | 1 << 1 | 0 | 1 << 5 | 1 << 63 | 1 << 6 | 0 | 1 << 8 | 0) & 0xffffffffffffffff
-
-// 0xffffffffffffffff is the value __default_kernel_pte_mask
 ```
 
 This macro defines the page protection bits. More details regarding paging can be found [here](https://wiki.osdev.org/Paging).
@@ -278,11 +272,11 @@ Details of paging on x86_64 can be found here:
 This section just provides a brief explanation for quick reference. `x86_64` uses 4-level page tables. 5-level is also possible but ignored here and in subsequent code analysis.
 
 
-![[Pasted image 20240927164245.png]]
+![Page-table hierarchy](./imgs/page-hierarchy.png)
 
 Bits 47-39 provide index into PGD, 38-30 into PUD, 29-21 into PMD, 20-12 in PTE, and the lowest 12 bits specify the offset into the page.
 
-![[Pasted image 20240927165227.png]]
+![PTE Entry](./imgs/pte-entry.png)
 Each table has 2^9 = 512 entries. 2^9 because there are 9 bits each, example `[20, 12]`
 - An entry in PGD table can map 1 << 39 = 512 GB of memory, so a 48 bit address space can theoretically map 256 TB
 	- 1 bit is used to distinguish kernel addresses from userspace addresses, so the address space on linux is constrained to 128 TB (2^47)
